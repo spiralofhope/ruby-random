@@ -1,5 +1,10 @@
 #
 
+# TODO
+# For every file, create a still-working symlink to where it used to be.  Name it after the file, with '-dir'
+#   I need to have a reference, just in case it's an unnamed file from a directory which has the artist/album names.
+
+
 # Problem:
 # Given a bunch of unsorted mp3s in multiple directories and subdirectories.
 # I want to easily listen to 'x' of them, randomly chosen, and be able to find them easily and move them manually to where they belong in my hierarchy.
