@@ -1,29 +1,29 @@
 #
 
 # TODO
-# For every file, create a still-working symlink to where it used to be.  Name it after the file, with '-dir'
-#   I need to have a reference, just in case it's an unnamed file from a directory which has the artist/album names.
+# In case I've run this back-to-back, don't move any new files if there are already some in there.
 
 
-# Problem:
+# --
+# Problem
+# --
 # Given a bunch of unsorted mp3s in multiple directories and subdirectories.
 # I want to easily listen to 'x' of them, randomly chosen, and be able to find them easily and move them manually to where they belong in my hierarchy.
-
-
+# So..
 # - For x directories.
 # -- Out of all files in all subdirectories.
 # - Choose x files.
 # - Create symbolic links to those files, in specific directory, renamed to (filename-ln).  They are not meant to be working symbolic links, just references to the original location.
 # - Move the real files to that same specific directory.
 
-# For x directories
-
+# For 'x' directories
 seek_directories =  [
                       '/mnt/data/live/media/music/unsorted-tested',
                       '/mnt/data/live/media/music/unsorted-untested',
                     ]
 #seek_directories = [ '/mnt/data/live/media/music/playlist-testing' ]
 destination = '/mnt/data/live/media/music/playlist'
+# 'x' files
 number_of_files = 3
 player_launch = '/usr/bin/deadbeef'
 player_command = [ '/usr/bin/deadbeef', '--queue' ]
@@ -70,6 +70,18 @@ seek_directories.each{ |dir|
 
 # TODO:  Sanity-check 'number_of_files'
 files = files.flatten.shuffle[ 0..( number_of_files-1 ) ]
+
+# For every file, create a still-working symlink to where it used to be.  Name it after the file, with '-dir'
+#   I need to have a reference, just in case it's an unnamed file from a directory which has the artist/album names.
+# Make symlinks to each file's original location.
+files.each{ |file|
+  source = File.dirname(  file )
+  # TODO?:  Also plant the last directory within the filename?
+  dest   = File.basename( file ) + '-dir'
+  dest   = File.join( destination, dest )
+  puts source + "\n  => " + dest
+  File.symlink( source, dest )
+}
 
 # I could do this without fileutils, but .. meh.
 #   http://www.ruby-doc.org/core/classes/File.html
