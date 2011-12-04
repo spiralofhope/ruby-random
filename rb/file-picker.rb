@@ -15,18 +15,44 @@
 
 # For 'x' directories
 array_of_directories_to_search_through =  [
-                      '/mnt/data/live/media/music/unsorted-tested/',
-                      '/mnt/data/live/media/music/unsorted-untested/',
-                    ]
+                         '/mnt/data/live/media/music/unsorted-tested/',
+                         '/mnt/data/live/media/music/unsorted-untested/',
+                        ]
 destination_directory = '/mnt/data/live/media/music/playlist/'
+$sorted_directory     = '/mnt/data/live/media/music/sorted/'
 # 'x' files
 number_of_files = 3
 
 def player_command_before( destination_directory )
-  pwd=Dir.pwd
+  @pwd=Dir.pwd
+
+  # I often leave a directory of the symlinks and directories, and just move the music away (to sort it).
+  # When this happens, this script will notice that and (safely) remove old symlinks and directories before proceeding.
+  if File.directory?( destination_directory ) then
+    # Check if there are non-symlinks in it.  If no, delete it.
+    flag = false
+    dir = Dir.glob( File.join( destination_directory, '*' ) )
+    dir.each { |f|
+      flag = true if ( not File.symlink?( f ) ) and ( not File.directory?( f ) )
+    }
+    dir.each{ |f|
+      File.delete( f ) if File.symlink?( f ) == true
+      Dir.delete( f ) if File.directory?( f ) == true
+    } if flag == false
+  end
+
+  # if it doesn't exist, make it
+  Dir.mkdir( destination_directory ) if not File.directory?( destination_directory )
+  
+  dest = File.join( destination_directory, ' sorted' )
+  File.symlink( $sorted_directory, dest ) if not File.symlink?( dest )
+
+  # Run my file manager, with all kinds of settings so it can be coloured.
+  # But do it in the proper directory.
   Dir.chdir( destination_directory )
   system( "export LS_COLORS=\"no=00:fi=00:di=00;36:ln=00;35:pi=40;33:so=00;35:bd=40;33;01:cd=40;33;01:or=00;05;37;41:mi=00;05;37;41:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.rar=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.bz=00;31:*.tz=00;31:*.rpm=00;31:*.cpio=00;31:*.torrent=00;31:*.jpg=00;35:*~.jpg=00;33:*.gif=00;35:*.bmp=00;35:*.xbm=00;35:*.xpm=00;35:*.png=00;35:*.tif=00;35:*~.mp3=00;03:*~.ogg=00;03:*~.flv=00;03:*~.ape=00;03:*~.flv=00;03:*~.mpg=00;03:*~.wmv=00;03:*.part=00;03:\";ssfm &" )
-  Dir.chdir( pwd )
+
+  Dir.chdir( @pwd )
 end
 
 def player_command_after( destination_directory )
@@ -133,10 +159,11 @@ end
 player_command_before( destination_directory )
 
 Kernel::exit( status=false ) if sanity_check(
-                          array_of_directories_to_search_through,
-                          destination_directory,
-                          number_of_files
-                        ) == false
+                                  array_of_directories_to_search_through,
+                                  destination_directory,
+                                  number_of_files
+                                ) == false
+
 
 array_of_files = pick_files( array_of_directories_to_search_through, number_of_files )
 
