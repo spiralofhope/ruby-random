@@ -1,6 +1,3 @@
-#
-
-
 # --
 # Problem
 # --
@@ -15,11 +12,11 @@
 
 # For 'x' directories
 array_of_directories_to_search_through =  [
-                         '/mnt/data/live/media/music/unsorted-tested/',
-                         '/mnt/data/live/media/music/unsorted-untested/',
+                         '/l/_inbox/media-inbox/music/unsorted-tested/',
+                         '/l/_inbox/media-inbox/music/unsorted-untested/',
                         ]
-destination_directory = '/mnt/data/live/media/music/playlist/'
-$sorted_directory     = '/mnt/data/live/media/music/sorted/'
+destination_directory = '/l/media/music/playlist/'
+$sorted_directory     = '/l/media/music/sorted/'
 # 'x' files
 number_of_files = 3
 
@@ -50,7 +47,16 @@ def player_command_before( destination_directory )
   # Run my file manager, with all kinds of settings so it can be coloured.
   # But do it in the proper directory.
   Dir.chdir( destination_directory )
-  system( "export LS_COLORS=\"no=00:fi=00:di=00;36:ln=00;35:pi=40;33:so=00;35:bd=40;33;01:cd=40;33;01:or=00;05;37;41:mi=00;05;37;41:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.rar=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.bz=00;31:*.tz=00;31:*.rpm=00;31:*.cpio=00;31:*.torrent=00;31:*.jpg=00;35:*~.jpg=00;33:*.gif=00;35:*.bmp=00;35:*.xbm=00;35:*.xpm=00;35:*.png=00;35:*.tif=00;35:*~.mp3=00;03:*~.ogg=00;03:*~.flv=00;03:*~.ape=00;03:*~.flv=00;03:*~.mpg=00;03:*~.wmv=00;03:*.part=00;03:\";ssfm &" )
+
+  #system( "export LS_COLORS=\"no=00:fi=00:di=00;36:ln=00;35:pi=40;33:so=00;35:bd=40;33;01:cd=40;33;01:or=00;05;37;41:mi=00;05;37;41:ex=00;32:*.cmd=00;32:*.exe=00;32:*.com=00;32:*.btm=00;32:*.bat=00;32:*.sh=00;32:*.csh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.rar=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.gz=00;31:*.bz2=00;31:*.bz=00;31:*.tz=00;31:*.rpm=00;31:*.cpio=00;31:*.torrent=00;31:*.jpg=00;35:*~.jpg=00;33:*.gif=00;35:*.bmp=00;35:*.xbm=00;35:*.xpm=00;35:*.png=00;35:*.tif=00;35:*~.mp3=00;03:*~.ogg=00;03:*~.flv=00;03:*~.ape=00;03:*~.flv=00;03:*~.mpg=00;03:*~.wmv=00;03:*.part=00;03:\";ssfm &" )
+  # TODO:  Feature request:  pcmanfm-mod appears to have no functionality to switch to a specific tab.  Opening the same tab twice.. opens it twice instead of switching to that tab like geany.
+  system(
+    "pcmanfm-mod \
+      /l/media/music/sorted/ \
+      #{destination_directory} \
+      /l/_inbox/media-inbox/music \
+      &"
+    )
 
   Dir.chdir( @pwd )
 end
