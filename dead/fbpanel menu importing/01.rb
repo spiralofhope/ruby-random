@@ -1,3 +1,7 @@
+# Just some basics.
+
+
+
 def get_stuff(file)
   $exec = ""
   $name = ""
